@@ -15,6 +15,10 @@ Xprz provides a wide range of functionalities to simplify and enhance your Node.
 - **Route**: Efficiently organize and manage your application's routes with the `Route` class. Define routes for various HTTP methods and handle requests with ease.
 - **SharedApp**: Access and share the Express application instance across modules with the `SharedApp` class. Simplify application-wide configuration and access with ease.
 
+- **$read**: Dynamically load files or folders within a Node.js environment with ease using the `$read` utility function. Simplify the process of managing dependencies and accessing resources effortlessly.
+
+- **$install**: Simplify package installation in your Node.js applications with the `$install` utility function provided by Xprz. Automate the process of checking for package existence and installing dependencies seamlessly.
+
 ## Features
 
 - **Middleware Management**: Effortlessly enhance your application's functionality by attaching middleware functions with a simple API.
@@ -23,13 +27,18 @@ Xprz provides a wide range of functionalities to simplify and enhance your Node.
 - **HTTP Method Utilities**: Simplify HTTP method handling with predefined utility methods for GET, POST, PUT, DELETE, and more.
 - **Package Integration**: Integrate popular Node.js packages seamlessly to extend the functionality of your application.
 - **Shared Application Instance**: Share the Express application instance across modules for easy access and configuration.
+- **$read**: Dynamically load modules or directories within your project, simplifying dependency management and resource access.
+  
+- **$install**: Streamline package installation by automating the process of checking for package existence and installing dependencies with ease.
+
 
 ## Example Features:
 
 ### Express Application Management
 Simplify the management of your Express application's lifecycle with xprz's intuitive `App` class. Initialize your application, launch the server, and handle lifecycle events seamlessly:
 ```javascript
-const { App } = require('xprz');
+const Xprz= require("xprz")
+const { App } = new Xprz()
 const { initApp, listen, launch } = new App();
 
 // Initialize the Express application
@@ -44,8 +53,9 @@ launch();
 ### Middleware Management
 Effortlessly enhance your application's functionality by attaching middleware functions with a simple API:
 ```javascript
-const { App } = require('xprz');
-const { use, useJsonBody, cors } = new App();
+const Xprz= require("xprz")
+const { App } = new Xprz()
+const { use, useJsonBody } = new App();
 
 // Enable CORS
 use(cors());
@@ -57,7 +67,8 @@ useJsonBody();
 ### Static File Serving
 Serve static files and directories with ease:
 ```javascript
-const { App } = require('xprz');
+const Xprz= require("xprz")
+const { App } = new Xprz()
 const { static } = new App();
 
 // Serve static files from the 'public' directory
@@ -67,11 +78,12 @@ static('public');
 ### Route Management
 Efficiently organize and manage your application's routes with the `Route` class:
 ```javascript
-const { App, Route } = require("xprz")
-const { get } = new Route();
+const Xprz= require("xprz")
+const {  Route } = new Xprz()
+const {setRoute } = new Route();
 
 // Define a route
-get('/api/users', (req, res) => {
+setRoute('/api/users').get((req, res) => {
   // Handle GET request for '/api/users'
 });
 ```
@@ -79,7 +91,8 @@ get('/api/users', (req, res) => {
 ### Database Integration
 Seamlessly integrate with MongoDB and MySQL databases:
 ```javascript
-const { App, Database } = require("xprz")
+const Xprz= require("xprz")
+const { App, Database } = new Xprz()
 const { MongoDB, MySql } = new Database();
 
 // MongoDB usage example
@@ -94,17 +107,15 @@ query('SELECT * FROM users');
 ### HTTP Method Utilities
 Simplify HTTP method handling with the `HttpMethod` class. Define and handle various HTTP methods effortlessly:
 ```javascript
-const { HttpMethod } = require("xprz")
-const { GET, POST, PUT, DELETE } = new HttpMethod();
-
+const Xprz= require("xprz")
+const { HttpMethod } = new Xprz()
+const { setBaseRoute } = new HttpMethod();
 // Define routes for different HTTP methods
-GET('/api/users', (req, res) => {
+setBaseRoute('/api/users',).GET((req, res) => {
   // Handle GET request for '/api/users'
-});
-
-POST('/api/users', (req, res) => {
+}).POST((req, res) => {
   // Handle POST request for '/api/users'
-});
+})
 ```
 
 ### Package Integration
@@ -130,26 +141,51 @@ Get started with xprz by initializing the components you need and configuring th
 ### Basic Example
 
 ```javascript
-const { App, Route } = require("xprz")
+const Xprz= require("xprz")
+const { App, Route } = new Xprz()
 const { initApp, listen } = new App();
-const { get } = new Route();
+const { setRoute } = new Route();
 
 // Initialize Express application
 initApp();
 
 // Define a basic route
-get('/', (req, res) => {
-  res.send('Hello, xprz!');
+setRoute('/').get((req, {send}) => {
+  send('Hello, xprz!');
 });
 
 // Start server
 listen(3000);
 ```
 
+### $read
+```javascript
+const myModule = $read("./myFile.js");
+console.log(myModule); // Outputs the loaded module
+
+const myFolder = $read("./myFolder");
+console.log(myFolder); // Outputs an object containing all modules within the folder
+```
+
+### $install
+```javascript
+const installedPackage = $install('example-package');
+```
+
+### Real-world Example (Project Initialization)
+
+```javascript
+const myFolder = $read("./myFolder");
+console.log(myFolder); // Outputs an object containing all modules within the folder
+
+const installedPackage = $install('example-package');
+```
+
 ### Real-world Example (Blogging Platform)
 
 ```javascript
-const { App } = require("xprz")
+const Xprz= require("xprz")
+const { App } = new Xprz()
 const { initApp, loadRoutes, listen } = new App();
 
 // Initialize Express application
