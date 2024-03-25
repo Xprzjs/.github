@@ -9,37 +9,59 @@ Xprz provides a wide range of functionalities to simplify and enhance your Node.
 ## Components
 
 - **App**: Manage your Express application's lifecycle effortlessly with the `App` class. Initialize, launch, and handle server events seamlessly.
-- **Database**: Seamlessly integrate with MongoDB and MySQL databases for efficient data management and CRUD operations.
-- **HttpMethod**: Simplify HTTP method handling with the `HttpMethod` class. Define and handle various HTTP methods effortlessly.
 - **Package**: Integrate popular Node.js packages seamlessly with xprz. Enjoy out-of-the-box support for essential packages like bcryptjs, bodyParser, cors, jwt, multer, nodemailer, and more.
 - **Route**: Efficiently organize and manage your application's routes with the `Route` class. Define routes for various HTTP methods and handle requests with ease.
 - **SharedApp**: Access and share the Express application instance across modules with the `SharedApp` class. Simplify application-wide configuration and access with ease.
+
+## Utilities
 
 - **$read**: Dynamically load files or folders within a Node.js environment with ease using the `$read` utility function. Simplify the process of managing dependencies and accessing resources effortlessly.
 
 - **$install**: Simplify package installation in your Node.js applications with the `$install` utility function provided by Xprz. Automate the process of checking for package existence and installing dependencies seamlessly.
 
+Sure, here's how you can describe the static methods of the `Xprz` class using markdown:
+
+## Static Methods
+
+Xprz provides the following static methods for convenient instantiation of various components:
+
+### `Xprz.App()`
+
+Creates a new instance of the `AppManager` class, allowing easy management of the Express application lifecycle.
+
+### `Xprz.Package()`
+
+Creates a new instance of the `PackageManager` class, facilitating seamless integration of popular Node.js packages into your application.
+
+### `Xprz.Route()`
+
+Creates a new instance of the `RouteManager` class, enabling efficient organization and management of application routes.
+
+### `Xprz.GetUtilsApp()`
+
+Creates a new instance of the `AppSharedManager` class, providing access to shared application configurations and resources across modules.
+
 ## Features
 
 - **Middleware Management**: Effortlessly enhance your application's functionality by attaching middleware functions with a simple API.
 - **Static File Serving**: Serve static files and directories effortlessly to handle CSS, JavaScript, images, and more.
-- **Database Integration**: Seamlessly integrate with MongoDB and MySQL databases for efficient data management.
-- **HTTP Method Utilities**: Simplify HTTP method handling with predefined utility methods for GET, POST, PUT, DELETE, and more.
 - **Package Integration**: Integrate popular Node.js packages seamlessly to extend the functionality of your application.
 - **Shared Application Instance**: Share the Express application instance across modules for easy access and configuration.
 - **$read**: Dynamically load modules or directories within your project, simplifying dependency management and resource access.
-  
 - **$install**: Streamline package installation by automating the process of checking for package existence and installing dependencies with ease.
-
 
 ## Example Features:
 
 ### Express Application Management
+
 Simplify the management of your Express application's lifecycle with xprz's intuitive `App` class. Initialize your application, launch the server, and handle lifecycle events seamlessly:
+
 ```javascript
-const Xprz= require("xprz")
-const { App } = new Xprz()
+const Xprz = require("xprz");
+const { App } = new Xprz();
 const { initApp, listen, launch } = new App();
+// or
+const { initApp, listen, launch } = Xprz.App();
 
 // Initialize the Express application
 initApp();
@@ -51,10 +73,12 @@ launch();
 ```
 
 ### Middleware Management
+
 Effortlessly enhance your application's functionality by attaching middleware functions with a simple API:
+
 ```javascript
-const Xprz= require("xprz")
-const { App } = new Xprz()
+const Xprz = require("xprz");
+const { App } = new Xprz();
 const { use, useJsonBody } = new App();
 
 // Enable CORS
@@ -65,63 +89,44 @@ useJsonBody();
 ```
 
 ### Static File Serving
+
 Serve static files and directories with ease:
+
 ```javascript
-const Xprz= require("xprz")
-const { App } = new Xprz()
+const Xprz = require("xprz");
+const { App } = new Xprz();
 const { static } = new App();
+// or
+const { static } = Xprz.App();
 
 // Serve static files from the 'public' directory
-static('public');
+static("public");
 ```
 
 ### Route Management
+
 Efficiently organize and manage your application's routes with the `Route` class:
-```javascript
-const Xprz= require("xprz")
-const {  Route } = new Xprz()
-const {setRoute } = new Route();
 
+```javascript
+const Xprz = require("xprz");
+const { Route } = new Xprz();
+const { route } = new Route();
+// or
+const { route } = Xprz.Route();
 // Define a route
-setRoute('/api/users').get((req, res) => {
-  // Handle GET request for '/api/users'
-});
-```
-
-### Database Integration
-Seamlessly integrate with MongoDB and MySQL databases:
-```javascript
-const Xprz= require("xprz")
-const { App, Database } = new Xprz()
-const { MongoDB, MySql } = new Database();
-
-// MongoDB usage example
-const { find } = MongoDB();
-find('users', { username: 'john_doe' });
-
-// MySQL usage example
-const { query } = MySql();
-query('SELECT * FROM users');
-```
-
-### HTTP Method Utilities
-Simplify HTTP method handling with the `HttpMethod` class. Define and handle various HTTP methods effortlessly:
-```javascript
-const Xprz= require("xprz")
-const { HttpMethod } = new Xprz()
-const { setBaseRoute } = new HttpMethod();
-// Define routes for different HTTP methods
-setBaseRoute('/api/users',).GET((req, res) => {
-  // Handle GET request for '/api/users'
-}).POST((req, res) => {
-  // Handle POST request for '/api/users'
-})
+route("/api/users")
+  .get((req, res) => {
+    // Handle GET request for '/api/users'
+  })
+  .attachTo(app);
 ```
 
 ### Package Integration
+
 Integrate popular Node.js packages seamlessly with xprz. Enjoy out-of-the-box support for bcryptjs, bodyParser, cors, jwt, multer, nodemailer, and more.
 
 ### Shared Application Instance
+
 Access and share the Express application instance across modules with xprz's `SharedApp` class. Simplify application-wide configuration and access with ease.
 
 ## Installation
@@ -141,17 +146,17 @@ Get started with xprz by initializing the components you need and configuring th
 ### Basic Example
 
 ```javascript
-const Xprz= require("xprz")
-const { App, Route } = new Xprz()
+const Xprz = require("xprz");
+const { App, Route } = new Xprz();
 const { initApp, listen } = new App();
-const { setRoute } = new Route();
+const { route } = new Route();
 
 // Initialize Express application
 initApp();
 
 // Define a basic route
-setRoute('/').get((req, {send}) => {
-  send('Hello, xprz!');
+route("/").get((req, { send }) => {
+  send("Hello, xprz!");
 });
 
 // Start server
@@ -159,6 +164,7 @@ listen(3000);
 ```
 
 ### $read
+
 ```javascript
 const myModule = $read("./myFile.js");
 console.log(myModule); // Outputs the loaded module
@@ -168,35 +174,160 @@ console.log(myFolder); // Outputs an object containing all modules within the fo
 ```
 
 ### $install
-```javascript
-const installedPackage = $install('example-package');
-```
-
-### Real-world Example (Project Initialization)
 
 ```javascript
-const myFolder = $read("./myFolder");
-console.log(myFolder); // Outputs an object containing all modules within the folder
-
-const installedPackage = $install('example-package');
+const installedPackage = $install("example-package");
 ```
 
-### Real-world Example (Blogging Platform)
+Sure, let's break down the provided examples:
+
+### Example Init APP:
 
 ```javascript
-const Xprz= require("xprz")
-const { App } = new Xprz()
-const { initApp, loadRoutes, listen } = new App();
+const Xprz = require("xprz");
 
-// Initialize Express application
-initApp();
+// Setup dotenv
+Xprz.Package().dotenv().setupDot();
 
-// Load routes from 'blogRoutes' directory
-loadRoutes('blogRoutes');
+// Initialize components
+const { use, launch, loadRoutes, useJsonBody, static } = Xprz.App();
 
-// Start server
-listen(3000);
+// Start server 
+launch();
+
+// JSON body parser
+useJsonBody();
+
+// Serve static files from 'public' directory
+static("public");
+
+// Install and use cookie-parser middleware
+const cookieParser = $install("cookie-parser");
+use(cookieParser());
+
+// Load middleware and database setup utilities
+$read("middleware/setup");
+$read("utils/database");
+
+// Load all router files in 'routes' directory
+loadRoutes("routes");
 ```
+
+**Explanation:**
+- This section initializes the XPRZ framework and sets up the Express application.
+- It loads environment variables using dotenv to configure the application environment.
+- The `App` component's methods like `use`, `launch`, `loadRoutes`, `useJsonBody`, and `static` are utilized to configure the Express app.
+- The server is launched to start listening for incoming requests.
+- Middleware such as `cookie-parser` is installed and used.
+- Custom middleware and database setup utilities are loaded.
+- All router files in the 'routes' directory are loaded to handle different routes in the application.
+
+### Example Router:
+
+```javascript
+const Xprz = require('xprz');
+const router = Xprz.Route();
+const { ensureAuthenticated, verifyToken } = $read("middleware/is-auth");
+const { getHome } = $read("controller/home/home");
+
+// Apply middleware for all routes
+router.globalMiddleware([ensureAuthenticated, verifyToken]);
+
+// Define routes
+router.route("/").get((req, { redirect }) => redirect("/home"));
+router.route("/home").using([ensureAuthenticated, verifyToken]).get(getHome);
+
+module.exports = router;
+```
+
+**Explanation:**
+- This section defines a router using the `Route` component provided by XPRZ.
+- Middleware functions for authentication (`ensureAuthenticated` and `verifyToken`) are imported using the `$read` utility function.
+- The `globalMiddleware` method is used to apply middleware for all routes.
+- Route handlers are defined for the root path ("/") and "/home" path.
+- The `getHome` function from the home controller is used as a route handler for the "/home" route.
+
+### Example Controller (for authentication registering):
+
+```javascript
+// Controller function to handle signup form submission
+exports.postSignup = async (req, { getJsonHandler, status }) => {
+  const { getBody, verifyBody } = req;
+
+  // Define validation rules for request body
+  const rules = {
+    username: 'username',
+    password: 'password',
+    confirmPassword: "same:password",
+    name: "string|min:10",
+    age: "min:16|max:99"
+  };
+
+  // Define options for validation
+  const options = {
+    customMessages: {
+      password: "Password is required"
+    }
+  };
+
+  const { created, validationFailed, internalServerError } = getJsonHandler();
+
+  try {
+    // Extract user input from request body
+    const { username, email, password, passwordConf } = getBody();
+
+    // Validate user input
+    const errors = verifyBody(rules, options);
+
+    if (Object.keys(errors).length === 0) {
+      console.log('Request body is valid');
+    } else {
+      // Return validation errors
+      validationFailed({ errors });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+
+    if (existingUser) {
+      return status(409).json({
+        success: false,
+        error: "User already exists.",
+      });
+    } else {
+      // Hash the password securely
+      const hashedPassword = await bcryptjs().hash(password, 10);
+      const newUser = await User.create({
+        username: username,
+        email: email,
+        password: hashedPassword,
+      });
+
+      // Generate JWT token with user information
+      const token = generateAuthToken(newUser);
+      req.session.token = token;
+
+      // Send success response
+      return created({ token });
+    }
+  } catch (error) {
+    // Handle other errors (e.g., database error)
+    internalServerError(error.message);
+  }
+};
+```
+
+**Explanation:**
+- This section defines a controller function (`postSignup`) to handle user signup requests.
+- The function receives the request object (`req`) and utility functions (`getJsonHandler`, `status`) as parameters.
+- Validation rules for the request body are defined using the `verifyBody` function.
+- Custom error messages for validation are defined in the `options` object.
+- The request body is validated against the defined rules, and any validation errors are returned if present.
+- The function checks if the user already exists in the database.
+- If the user does not exist, the password is securely hashed using bcryptjs, and a new user is created in the database.
+- A JWT token is generated for the new user, and the token is returned in the response.
+- Any errors that occur during the process are handled and an appropriate response is sent.
+
 
 ## Documentation
 
@@ -205,7 +336,6 @@ For detailed documentation on xprz and its various features, refer to the docume
 ## Benefits of Using xprz
 
 - **Productivity**: xprz simplifies complex tasks, allowing developers to focus on building features rather than managing boilerplate code.
-  
 - **Scalability**: With built-in support for middleware, routing, and database integration, xprz facilitates the development of scalable web applications.
 
 - **Flexibility**: xprz offers flexibility in choosing database options, middleware, and package integrations, enabling developers to tailor their applications to specific requirements.
