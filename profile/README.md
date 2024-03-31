@@ -11,7 +11,6 @@ Xprz provides a wide range of functionalities to simplify and enhance your Node.
 - **App**: Manage your Express application's lifecycle effortlessly with the `App` class. Initialize, launch, and handle server events seamlessly.
 - **Package**: Integrate popular Node.js packages seamlessly with xprz. Enjoy out-of-the-box support for essential packages like bcryptjs, bodyParser, cors, jwt, multer, nodemailer, and more.
 - **Route**: Efficiently organize and manage your application's routes with the `Route` class. Define routes for various HTTP methods and handle requests with ease.
-- **SharedApp**: Access and share the Express application instance across modules with the `SharedApp` class. Simplify application-wide configuration and access with ease.
 
 ## Utilities
 
@@ -46,7 +45,6 @@ Creates a new instance of the `AppSharedManager` class, providing access to shar
 - **Middleware Management**: Effortlessly enhance your application's functionality by attaching middleware functions with a simple API.
 - **Static File Serving**: Serve static files and directories effortlessly to handle CSS, JavaScript, images, and more.
 - **Package Integration**: Integrate popular Node.js packages seamlessly to extend the functionality of your application.
-- **Shared Application Instance**: Share the Express application instance across modules for easy access and configuration.
 - **$read**: Dynamically load modules or directories within your project, simplifying dependency management and resource access.
 - **$install**: Streamline package installation by automating the process of checking for package existence and installing dependencies with ease.
 
@@ -77,15 +75,12 @@ launch();
 Effortlessly enhance your application's functionality by attaching middleware functions with a simple API:
 
 ```javascript
-const Xprz = require("xprz");
-const { App } = new Xprz();
-const { use, useJsonBody } = new App();
-
+const  { use, bodyParsing } = require("xprz").App();
 // Enable CORS
 use(cors());
 
 // Parse JSON and URL-encoded request bodies
-useJsonBody();
+bodyParsing();
 ```
 
 ### Static File Serving
@@ -115,7 +110,7 @@ const { route } = new Route();
 const { route } = Xprz.Route();
 // Define a route
 route("/api/users")
-  .get((req, res) => {
+  .get((ctx) => {
     // Handle GET request for '/api/users'
   })
   .attachTo(app);
@@ -124,10 +119,6 @@ route("/api/users")
 ### Package Integration
 
 Integrate popular Node.js packages seamlessly with xprz. Enjoy out-of-the-box support for bcryptjs, bodyParser, cors, jwt, multer, nodemailer, and more.
-
-### Shared Application Instance
-
-Access and share the Express application instance across modules with xprz's `SharedApp` class. Simplify application-wide configuration and access with ease.
 
 ## Installation
 
@@ -155,7 +146,7 @@ const { route } = new Route();
 initApp();
 
 // Define a basic route
-route("/").get((req, { send }) => {
+route("/").get(({ send }) => {
   send("Hello, xprz!");
 });
 
@@ -190,13 +181,13 @@ const Xprz = require("xprz");
 Xprz.Package().dotenv().setupDot();
 
 // Initialize components
-const { use, launch, loadRoutes, useJsonBody, static } = Xprz.App();
+const { use, launch, loadRoutes, bodyParsing, static } = Xprz.App();
 
 // Start server 
 launch();
 
 // JSON body parser
-useJsonBody();
+bodyParsing();
 
 // Serve static files from 'public' directory
 static("public");
@@ -216,7 +207,7 @@ loadRoutes("routes");
 **Explanation:**
 - This section initializes the XPRZ framework and sets up the Express application.
 - It loads environment variables using dotenv to configure the application environment.
-- The `App` component's methods like `use`, `launch`, `loadRoutes`, `useJsonBody`, and `static` are utilized to configure the Express app.
+- The `App` component's methods like `use`, `launch`, `loadRoutes`, `bodyParsing`, and `static` are utilized to configure the Express app.
 - The server is launched to start listening for incoming requests.
 - Middleware such as `cookie-parser` is installed and used.
 - Custom middleware and database setup utilities are loaded.
@@ -226,18 +217,18 @@ loadRoutes("routes");
 
 ```javascript
 const Xprz = require('xprz');
-const router = Xprz.Route();
+const {expose , route,globalMiddleware} = Xprz.Route();
 const { ensureAuthenticated, verifyToken } = $read("middleware/is-auth");
 const { getHome } = $read("controller/home/home");
 
 // Apply middleware for all routes
-router.globalMiddleware([ensureAuthenticated, verifyToken]);
+globalMiddleware([ensureAuthenticated, verifyToken]);
 
 // Define routes
-router.route("/").get((req, { redirect }) => redirect("/home"));
-router.route("/home").using([ensureAuthenticated, verifyToken]).get(getHome);
+route("/").get(({ redirect }) => redirect("/home"));
+route("/home").using([ensureAuthenticated, verifyToken]).get(getHome);
 
-module.exports = router;
+module.exports = expose;
 ```
 
 **Explanation:**
@@ -251,8 +242,8 @@ module.exports = router;
 
 ```javascript
 // Controller function to handle signup form submission
-exports.postSignup = async (req, { getJsonHandler, status }) => {
-  const { getBody, verifyBody } = req;
+exports.postSignup = async (ctx) => {
+  const { getBody, verifyBody } = ctx.req;
 
   // Define validation rules for request body
   const rules = {
@@ -270,7 +261,7 @@ exports.postSignup = async (req, { getJsonHandler, status }) => {
     }
   };
 
-  const { created, validationFailed, internalServerError } = getJsonHandler();
+  const { created, validationFailed, internalServerError } = jsonSender();
 
   try {
     // Extract user input from request body
@@ -305,7 +296,7 @@ exports.postSignup = async (req, { getJsonHandler, status }) => {
 
       // Generate JWT token with user information
       const token = generateAuthToken(newUser);
-      req.session.token = token;
+      ctx.session.token = token;
 
       // Send success response
       return created({ token });
@@ -319,7 +310,7 @@ exports.postSignup = async (req, { getJsonHandler, status }) => {
 
 **Explanation:**
 - This section defines a controller function (`postSignup`) to handle user signup requests.
-- The function receives the request object (`req`) and utility functions (`getJsonHandler`, `status`) as parameters.
+- The function receives the request object (`req`) and utility functions (`jsonSender`, `status`) as parameters.
 - Validation rules for the request body are defined using the `verifyBody` function.
 - Custom error messages for validation are defined in the `options` object.
 - The request body is validated against the defined rules, and any validation errors are returned if present.
@@ -346,8 +337,8 @@ For detailed documentation on xprz and its various features, refer to the docume
 
 ## Bugs and Feedback
 
-If you encounter any bugs or have feedback or suggestions for improvement, please open an issue on the [GitHub repository](https://github.com/m-mdy-m/XprsJS).
+If you encounter any bugs or have feedback or suggestions for improvement, please open an issue on the [GitHub repository](https://github.com/m-mdy-m/Xprz).
 
 ## License
 
-xprz is licensed under the MIT License. See the [LICENSE](https://github.com/m-mdy-m/XprsJS/blob/main/LICENSE) file for details.
+xprz is licensed under the MIT License. See the [LICENSE](https://github.com/m-mdy-m/Xprz/blob/main/LICENSE) file for details.
